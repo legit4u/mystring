@@ -10,11 +10,13 @@ cd to mystring directory
 
 ```
 gnumake all
+
 usemystring.exe # to run a sample usage of the class
 ```
 
 # Sample output:
 Hello World!
+
 Bye World!!
 
 ```
