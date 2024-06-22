@@ -4,7 +4,7 @@ Unit tests using lest framework from : https://github.com/martinmoene/lest
 
 At the moment compilation/makefile is based on Microsoft Windows platform (cl.exe)
 
-### To Build
+# To Build
 Open a Developer Command Prompt for VS 2022
 cd to mystring directory
 
@@ -14,7 +14,7 @@ gnumake all
 usemystring.exe # to run a sample usage of the class
 ```
 
-# Sample output:
+### Sample output:
 Hello World!
 
 Bye World!!
@@ -23,7 +23,7 @@ Bye World!!
 unittest.exe -p #
 ```
 
-# Sample output: #
+### Sample output: #
 unittest.cpp(12): passed: Empty string has length zero (succeed): 0 == string( ).size() for 0 == 0
 
 unittest.cpp(13): passed: Empty string has length zero (succeed): 0 == string("").size() for 0 == 0
