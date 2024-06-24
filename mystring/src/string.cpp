@@ -1,12 +1,11 @@
 /*
-Imagine std::string did not exist and you need to write a multiplatform 
-string class with similar functionality to the one provided by the STL. 
-Provide at least 8 different functions (operators do count as functions) beyond
- constructors. Provide the solution in a compressed git folder including all the
-commits and specify which Modern standard C++ version was used. In case you used
-unit tests, and/or a building toolchain, please include them as well in the 
-compressed git folder
-*/
+ * A custom string implementation similar to std::string (not exhaustive) using also
+ * some modern C++ (C++11) features such as:
+ *    rvalue references and move constructor/assignment operators
+ *    list initialisation / brace-or-equal initialisers
+ *    nullptr
+ *    noexcept specifier
+ */
 
 #include <iostream>
 #include <algorithm>
@@ -178,4 +177,4 @@ size_t string::copy(char* s, size_t len, size_t pos) const
     std::copy(this->str + pos, this->str + pos + numChars, s);
     return numChars;
 }
-}
+} // namespace mylib

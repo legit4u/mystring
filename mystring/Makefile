@@ -6,9 +6,12 @@ INCLUDE	=	-Iinclude -I"C:\Program Files (x86)\Microsoft Visual Studio\2019\Profe
 SOURCE_DIR = src
 TEST_DIR = test
 OBJ_DIR = bin
-LINK	=	link
-REMOVE	=	-del
+
+#commands
 RM      =   del /Q
+RMDIR   =   rmdir
+
+
 HEADERS = string.h 
 SOURCES = $(SOURCE_DIR)/string.cpp
 MAINPROGRAM = $(SOURCE_DIR)/usemystring.cpp
@@ -22,6 +25,10 @@ TESTOBJECTS := $(patsubst $(SOURCE_DIR)/%.cpp, $(OBJ_DIR)/%.obj, $(TESTSOURCES))
 
 TARGET	=	$(OBJ_DIR)/usemystring.exe
 TESTTARGET = $(OBJ_DIR)/unittest.exe
+
+$(OBJECTS) $(MAINOBJECT) $(TESTOBJECTS): | $(OBJ_DIR)
+$(OBJ_DIR):
+	mkdir $(OBJ_DIR)
 
 default: $(TARGET)
 all: $(TARGET) $(TESTTARGET)
@@ -43,8 +50,10 @@ $(TESTTARGET): $(TESTOBJECTS) $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) /Fo$@ $^
 
 clean:
-	$(RM) $(OBJ_DIR)
 	$(RM) *.exe
+	$(RM) $(OBJ_DIR)
+	$(RMDIR) $(OBJ_DIR)
+	
 	
 info:
 	@echo [*] Object dir:     ${OBJ_DIR}
