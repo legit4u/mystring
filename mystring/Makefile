@@ -1,48 +1,52 @@
 
 CXX	=	cl
 CXXFLAGS=	-nologo -W3 -O1 -EHsc -DNO_DEBUG
-INCPATH	=	-I
+INCLUDE	=	-Iinclude -I"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.29.30133\include" -I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\ucrt"
+
+SOURCE_DIR = src
+TEST_DIR = test
+OBJ_DIR = bin
 LINK	=	link
 REMOVE	=	-del
-#LFLAGS	=	/NOLOGO /incremental:no /nodefaultlib:"libcmt" /SUBSYSTEM:windows
-#LIBS	=	kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib winmm.lib wsock32.lib comctl32.lib
-RM      =   del
+RM      =   del /Q
 HEADERS = string.h 
-SOURCES = string.cpp
-MAINPROGRAM = usemystring.cpp
-TESTSOURCES = unittest.cpp
+SOURCES = $(SOURCE_DIR)/string.cpp
+MAINPROGRAM = $(SOURCE_DIR)/usemystring.cpp
+TESTSOURCES = $(TEST_DIR)/unittest.cpp
 
-OBJECTS = $(SOURCES:%.cpp=%.obj)
-MAINOBJECT = $(MAINPROGRAM:%.cpp=%.obj)
-TESTOBJECTS = $(TESTSOURCES:%.cpp=%.obj)
+OBJECTS := $(patsubst $(SOURCE_DIR)/%.cpp, $(OBJ_DIR)/%.obj, $(SOURCES))
 
-TARGET	=	usemystring.exe
-TESTTARGET = unittest.exe
+MAINOBJECT := $(patsubst $(SOURCE_DIR)/%.cpp, $(OBJ_DIR)/%.obj, $(MAINPROGRAM))
+
+TESTOBJECTS := $(patsubst $(SOURCE_DIR)/%.cpp, $(OBJ_DIR)/%.obj, $(TESTSOURCES))
+
+TARGET	=	$(OBJ_DIR)/usemystring.exe
+TESTTARGET = $(OBJ_DIR)/unittest.exe
 
 default: $(TARGET)
 all: $(TARGET) $(TESTTARGET)
 test: $(TESTTARGET) 
 
-.SUFFIXES: .cpp .cxx .cc .C .c
-
 $(OBJECTS): $(SOURCES)
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o$@ $^
+	$(CXX) -c $(CXXFLAGS) $(INCLUDE) /Fo$@ $^
 
 $(MAINOBJECT): $(MAINPROGRAM)
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fo$@ $^
+	$(CXX) -c $(CXXFLAGS) $(INCLUDE) /Fo$@ $^
 
 $(TARGET): $(MAINOBJECT) $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(INCPATH) -Fo$@ $^
-
-
+	$(CXX) $(CXXFLAGS) $(INCLUDE) /Fo$@ $^
 
 $(TESTOBJECTS): $(TESTSOURCES)
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fo$@ $^
+	$(CXX) -c $(CXXFLAGS) $(INCLUDE) /Fo$@ $^
 
 $(TESTTARGET): $(TESTOBJECTS) $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(INCPATH) -Fo$@ $^
+	$(CXX) $(CXXFLAGS) $(INCLUDE) /Fo$@ $^
 
 clean:
-	$(RM) *.obj
+	$(RM) $(OBJ_DIR)
 	$(RM) *.exe
-
+	
+info:
+	@echo [*] Object dir:     ${OBJ_DIR}
+	@echo [*] Sources:        ${SOURCE_DIR}
+	@echo [*] Objects:        ${OBJECTS}

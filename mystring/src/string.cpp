@@ -9,19 +9,10 @@ compressed git folder
 */
 
 #include <iostream>
+#include <algorithm>
 #include "string.hpp"
 
 using namespace std;
-
-/*
-int main()
-{
-    mylib::string str1("Hello World!");
-    mylib::string str2("Bye World!");
-    std::cout << str1 << endl << str2 << endl;
-    return 0;
-}
-*/
 
 namespace
 {
@@ -45,45 +36,71 @@ namespace
 
 namespace mylib
 {
-string::string()
+string::string() : len(0), str(nullptr) {}
+
+string::string(size_t len, char c) : len(len)
 {
-    len = 0;
-    str = nullptr;
+    this->str = new char[len+1];
+    *(this->str) = {c};
 }
 
-string::string(const char * str)
+string::string(const char * str) : string()
 {
+    if (str == nullptr)
+    {
+        return;
+    }
     len = strlen(str);
     this->str = new char[len+1];
-    strcpy(this->str, str);
+    std::copy(str, str+len+1, this->str);
+
 }
 
 string::string(const string &rhs)
 {
     len = rhs.len;
     this->str = new char[len+1];
-    strcpy(this->str, rhs.c_str());
+    std::copy(rhs.str, rhs.str+len+1, this->str);
 }
 
-string::string(const string &&)
+string::string(string && source) noexcept
 {
+    len = source.len;
+    str = source.str;
+    source.str = nullptr;
 }
 
 string &string::operator=(const string &rhs)
 {
-    // TODO: insert return statement here
-    if (&rhs != this)
+    if (&rhs == this)
     {
-        len = rhs.len;
-        this->str = new char[len+1];
-        strcpy(this->str, rhs.c_str());
+        return *this;
     }
-    return *this; 
+    if (str != nullptr)
+    {
+        delete [] str;
+    }
+    len = rhs.len;
+    this->str = new char[len+1];
+    std::copy(rhs.str, rhs.str+len+1, this->str);
+    return *this;
 }
 
-string &string::operator=(const string &&)
+string &string::operator=(string &&rhs) noexcept
 {
-    // TODO: insert return statement here
+    if (&rhs == this)
+    {
+        return * this;
+    }
+
+    if (str != nullptr)
+    {
+        delete [] str;
+    }
+
+    len = rhs.len;
+    this->str = new char[len + 1];
+    std::copy(rhs.str, rhs.str+len+1, this->str);
     return *this;
 }
 
@@ -113,18 +130,52 @@ const char &string::operator[](size_t pos) const
     return str[pos];
 }
 
-ostream &mylib::operator<<(ostream & out, const mylib::string &str)
+char &string::at(size_t pos)
+{
+    return str[pos];
+}
+
+const char &string::at(size_t pos) const
+{
+    return str[pos];
+}
+
+ostream &operator<<(ostream & out, const mylib::string &str)
 {
     // TODO: insert return statement here
     out << str.c_str();
     return out;
 }
+
+string operator+(const string &s1, const string &s2)
+{
+    string s3(s1.size() + s2.size());
+    std::copy(s1.c_str(), s1.c_str()+s1.size()+1, s3.str);
+    std::copy(s2.c_str(), s2.c_str()+s2.size()+1, s3.str+s1.size());
+    return s3;
+}
+
 string::~string()
 {
-    delete [] str;
+    if (str != nullptr)
+    {
+        delete [] str;
+    }
 }
 const char *string::c_str() const
 {
     return str;
+}
+
+size_t string::copy(char* s, size_t len, size_t pos) const
+{
+    if (this->len < pos)
+    {
+        throw std::out_of_range("Not enough content in string"); 
+    }
+
+    size_t numChars = (this->len < (pos + len)) ? this->len - pos : len;
+    std::copy(this->str + pos, this->str + pos + numChars, s);
+    return numChars;
 }
 }
