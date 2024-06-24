@@ -44,4 +44,6 @@ All 6 selected tests passed.
 
 
 # To clean
+```
 gnumake clean
+```
