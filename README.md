@@ -41,3 +41,7 @@ unittest.cpp(41): passed: Copy assignment copy assigns (succeed): ptr1 != ptr2 f
 unittest.cpp(50): passed: Copy assignment is a NOOP during self assignment (succeed): s1 == s1 for hello == hello
 
 All 6 selected tests passed.
+
+
+# To clean
+gnumake clean
